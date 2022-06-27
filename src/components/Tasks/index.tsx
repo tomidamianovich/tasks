@@ -1,22 +1,21 @@
 import { FC, useState, useEffect } from "react";
 import TodoItem from "../TaskItem";
 import { taskRequestHandler } from "../../utils/requestHandler";
-import { TaskList, TaskListRequest, UserToken } from "../../type";
+import { TaskList, TaskListRequest } from "../../type";
+import { stateType } from "../../store";
 import { AxiosError } from "axios";
 import { INITIAL_TASKS } from "../../utils/constants";
+import { useSelector } from "react-redux";
 
-type TasksProps = {
-  token: UserToken;
-};
-
-const Tasks: FC<TasksProps> = ({ token }) => {
+const Tasks: FC = () => {
+  const user = useSelector((state: stateType) => state.user);
   const [tasks, setTodos] = useState<TaskList>(INITIAL_TASKS);
   const [error, setError] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
 
   const getItems = () =>
     taskRequestHandler
-      .getTasks(token)
+      .getTasks(user?.token)
       .then((response: TaskListRequest) => setTodos(response.data))
       .catch((err: AxiosError) => {
         setError(true);

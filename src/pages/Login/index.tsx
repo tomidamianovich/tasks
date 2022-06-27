@@ -1,14 +1,15 @@
 import { FC, useRef, SyntheticEvent, useState } from "react";
 import { AxiosError } from "axios";
-import { UserRequestLogin, UserToken } from "../../type";
+import { UserRequestLogin } from "../../type";
 import { userRequestHandler } from "../../utils/requestHandler";
+import { useDispatch } from "react-redux";
 import Input from "../../components/Input";
+import { setUser } from "../../store/reducers/userReducer";
+import { useNavigate } from "react-router-dom";
 
-type LoginProps = {
-  tokenHandler: (token: UserToken) => void;
-};
-
-const Login: FC<LoginProps> = ({ tokenHandler }) => {
+const Login: FC = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [error, setError] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
   const usernameInputRef = useRef<HTMLInputElement>(null);
@@ -21,7 +22,8 @@ const Login: FC<LoginProps> = ({ tokenHandler }) => {
     userRequestHandler
       .logInUser(userName, password)
       .then((response: UserRequestLogin) => {
-        tokenHandler(response.token);
+        dispatch(setUser(response));
+        navigate("/");
       })
       .catch((err: AxiosError) => {
         setError(true);
