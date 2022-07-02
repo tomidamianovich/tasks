@@ -9,14 +9,14 @@ const TodoItem: FC<Task> = ({
   createdAt,
   updatedAt,
 }) => (
-  <div>
-    <p>Completed: {completed}</p>
-    <p>_id: {_id}</p>
-    <p>description: {description}</p>
-    <p>owner: {owner}</p>
-    <p>createdAt: {createdAt}</p>
-    <p>updatedAt: {updatedAt}</p>
-  </div>
+  <>
+    <th>{_id}</th>
+    <th>{description}</th>
+    <th>{owner}</th>
+    <th>{createdAt}</th>
+    <th>{updatedAt}</th>
+    <th>{completed ? "Yes" : "No"}</th>
+  </>
 );
 
 export default TodoItem;

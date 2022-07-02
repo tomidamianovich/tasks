@@ -1,22 +1,25 @@
 import Header from "../../components/Header";
 import Tasks from "../../components/Tasks";
 import AuthProvider from "../../components/AuthProvider";
-import { useState } from "react";
 import { userRequestHandler } from "../../utils/requestHandler";
-import { UserToken, UserRequestLogout } from "../../type";
+import { UserRequestLogout } from "../../type";
 import { Routes, Route } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { stateType } from "../../store";
+import { unsetUser } from "../../store/reducers/userReducer";
 import Login from "../Login";
 import "./styles/index.scss";
 
 const Main = () => {
-  const [userToken, setUserToken] = useState<string>("");
-  const handleUserToken = (token: UserToken) => setUserToken(token);
+  const dispatch = useDispatch();
+  const user = useSelector((state: stateType) => state.user);
 
   const handleUserLogOut = () => {
     userRequestHandler
-      .logOutUser(userToken)
+      .logOutUser(user.token)
       .then(
-        (response: UserRequestLogout) => response.success && setUserToken("")
+        (response: UserRequestLogout) =>
+          response.success && dispatch(unsetUser())
       );
   };
 
@@ -24,22 +27,19 @@ const Main = () => {
     <div className="Main">
       <Header
         title="Header Task List"
-        userIsLogged={!!userToken?.length}
+        userIsLogged={!!user?.token?.length}
         handleUserLogOut={handleUserLogOut}
       />
       <Routes>
         <Route
           path="/"
           element={
-            <AuthProvider userIsLogged={!!userToken?.length}>
-              <Tasks token={userToken} />
+            <AuthProvider userIsLogged={!!user?.token?.length}>
+              <Tasks />
             </AuthProvider>
           }
         />
-        <Route
-          path="/login"
-          element={<Login tokenHandler={handleUserToken} />}
-        />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </div>
   );

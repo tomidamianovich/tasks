@@ -36,6 +36,11 @@ export type UserRequestLogin = {
   token: UserToken;
 };
 
+export type UserRequestAction = {
+  type: string;
+  payload: UserRequestLogin;
+};
+
 export type UserRequestLogout = {
   success: boolean;
 };
