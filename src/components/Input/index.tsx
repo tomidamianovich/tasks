@@ -1,5 +1,5 @@
 import { FC } from "react";
-import Badge from "../../components/Badge";
+import { Badge } from "..";
 
 type InputProps = {
   name: string;

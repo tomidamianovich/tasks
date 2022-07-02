@@ -1,17 +1,17 @@
 import { FC, useState, useEffect } from "react";
-import TodoItem from "../TaskItem";
-import Table from "../Table";
 import { taskRequestHandler } from "../../utils/requestHandler";
 import { TaskList, TaskListRequest } from "../../type";
 import { stateType } from "../../store";
 import { AxiosError } from "axios";
 import { INITIAL_TASKS } from "../../utils/constants";
 import { useSelector } from "react-redux";
+import { AddTaskForm, TaskItem, Table, Modal } from "../";
 
 const Tasks: FC = () => {
   const user = useSelector((state: stateType) => state.user);
   const [tasks, setTodos] = useState<TaskList>(INITIAL_TASKS);
   const [error, setError] = useState<boolean>(false);
+  const [isModalVisible, setModalVisibility] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
 
   const headings = [
@@ -22,6 +22,8 @@ const Tasks: FC = () => {
     "updatedAt",
     "Completed",
   ];
+
+  const handleModalVisibility = () => setModalVisibility(!isModalVisible);
 
   const getItems = () =>
     taskRequestHandler
@@ -40,10 +42,18 @@ const Tasks: FC = () => {
     <section>
       <Table headings={headings}>
         <tr>
-          {tasks && tasks.map((task) => <TodoItem key={task._id} {...task} />)}
+          {tasks && tasks.map((task) => <TaskItem key={task._id} {...task} />)}
         </tr>
       </Table>
       {error && <div>{errorMsg ?? "Error founded"}</div>}
+      <AddTaskForm handleAddTask={handleModalVisibility} />
+      {isModalVisible && (
+        <Modal
+          title="Add new Task"
+          children={<div>Form</div>}
+          onClose={handleModalVisibility}
+        />
+      )}
     </section>
   );
 };

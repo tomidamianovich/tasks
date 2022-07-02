@@ -1,5 +1,6 @@
 import { FC } from "react";
 import LogOut from "../../pages/LogOut";
+import "./styles/index.scss";
 
 type HeaderProps = {
   title: string;

@@ -3,11 +3,12 @@ import { AxiosError } from "axios";
 import { UserRequestLogin } from "../../type";
 import { userRequestHandler } from "../../utils/requestHandler";
 import { useDispatch } from "react-redux";
-import Input from "../../components/Input";
+import { Input, Button } from "../../components";
 import { setUser } from "../../store/reducers/userReducer";
 import { useNavigate } from "react-router-dom";
+import "./styles/index.scss";
 
-const Login: FC = () => {
+const LogIn: FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [error, setError] = useState<boolean>(false);
@@ -22,6 +23,7 @@ const Login: FC = () => {
     userRequestHandler
       .logInUser(userName, password)
       .then((response: UserRequestLogin) => {
+        localStorage.setItem("user", JSON.stringify(response));
         dispatch(setUser(response));
         navigate("/");
       })
@@ -61,11 +63,11 @@ const Login: FC = () => {
           hasError={passwordInputError}
           errorMsg="passwordInputError"
         />
-        <button type="submit">Log in</button>
+        <Button type="submit" label="Log In" />
       </form>
       {error && <p>{errorMsg}</p>}
     </section>
   );
 };
 
-export default Login;
+export default LogIn;
