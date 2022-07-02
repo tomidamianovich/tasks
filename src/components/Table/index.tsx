@@ -1,19 +1,21 @@
-import { FC, ReactElement } from "react";
+import { FC } from "react";
 import "./styles/index.scss";
 
 type TableProps = {
-  children: ReactElement;
+  children: JSX.Element;
   headings: string[];
 };
 
 const Table: FC<TableProps> = ({ children, headings }) => (
   <table>
-    <tr>
-      {headings.map((header: string) => (
-        <th>{header}</th>
-      ))}
-    </tr>
-    {children}
+    <thead>
+      <tr>
+        {headings.map((header: string, index: number) => (
+          <th key={index}>{header}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>{children}</tbody>
   </table>
 );
 export default Table;
