@@ -1,5 +1,6 @@
 import { FC, useState, useEffect } from "react";
 import TodoItem from "../TaskItem";
+import Table from "../Table";
 import { taskRequestHandler } from "../../utils/requestHandler";
 import { TaskList, TaskListRequest } from "../../type";
 import { stateType } from "../../store";
@@ -12,6 +13,15 @@ const Tasks: FC = () => {
   const [tasks, setTodos] = useState<TaskList>(INITIAL_TASKS);
   const [error, setError] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
+
+  const headings = [
+    "id",
+    "description",
+    "owner",
+    "createdAt",
+    "updatedAt",
+    "Completed",
+  ];
 
   const getItems = () =>
     taskRequestHandler
@@ -28,7 +38,11 @@ const Tasks: FC = () => {
 
   return (
     <section>
-      {tasks && tasks.map((task) => <TodoItem key={task._id} {...task} />)}
+      <Table headings={headings}>
+        <tr>
+          {tasks && tasks.map((task) => <TodoItem key={task._id} {...task} />)}
+        </tr>
+      </Table>
       {error && <div>{errorMsg ?? "Error founded"}</div>}
     </section>
   );
