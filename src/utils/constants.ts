@@ -11,9 +11,7 @@ export const INITIAL_TASKS: TaskList = [
   },
 ];
 
-export const TASKS_PATH = {
-  BASE: "/task",
-};
+export const TASKS_PATH = (id?: string) => "/task" + (id ? `/${id}` : "");
 
 export const USERS_PATH = {
   BASE: "/user",

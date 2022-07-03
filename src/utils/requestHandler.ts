@@ -60,11 +60,23 @@ const tasksRequests = {
     instance
       .get<TaskListRequest>(url, axiosConfigWithAuth(token))
       .then(responseBody),
+  post: (url: string, token: UserToken, data?: Record<string, string>) =>
+    instance
+      .post<TaskListRequest>(url, data, axiosConfigWithAuth(token))
+      .then(responseBody),
+  delete: (url: string, token: UserToken) =>
+    instance
+      .delete<TaskListRequest>(url, axiosConfigWithAuth(token))
+      .then(responseBody),
 };
 
 const taskRequestHandler = {
   getTasks: (token: UserToken): Promise<TaskListRequest> =>
-    tasksRequests.get(TASKS_PATH.BASE, token),
+    tasksRequests.get(TASKS_PATH(), token),
+  addTask: (token: UserToken, description: string): Promise<TaskListRequest> =>
+    tasksRequests.post(TASKS_PATH(), token, { description }),
+  deleteTask: (token: UserToken, id: string): Promise<TaskListRequest> =>
+    tasksRequests.delete(TASKS_PATH(id), token),
 };
 
 export { taskRequestHandler, userRequestHandler };
