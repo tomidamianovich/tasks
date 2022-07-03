@@ -1,4 +1,5 @@
 import AddTaskForm from "./AddTaskForm";
+import AddTaskButton from "./AddTaskButton";
 import AuthProvider from "./AuthProvider";
 import Badge from "./Badge";
 import Button from "./Button";
@@ -11,6 +12,7 @@ import Tasks from "./Tasks";
 
 export {
   AddTaskForm,
+  AddTaskButton,
   AuthProvider,
   Badge,
   Button,
