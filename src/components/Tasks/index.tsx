@@ -1,15 +1,17 @@
 import { FC, useState, useEffect } from "react";
 import { taskRequestHandler } from "../../utils/requestHandler";
-import { TaskList, TaskListRequest } from "../../type";
+import { TaskListRequest, Task } from "../../type";
 import { stateType } from "../../store";
 import { AxiosError } from "axios";
-import { INITIAL_TASKS } from "../../utils/constants";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { AddTaskForm, TaskItem, Table, Modal } from "../";
+import { addTask, setTasks } from "../../store/reducers/tasksReducer";
+import "./styles/index.scss";
 
 const Tasks: FC = () => {
   const user = useSelector((state: stateType) => state.user);
-  const [tasks, setTodos] = useState<TaskList>(INITIAL_TASKS);
+  const tasks = useSelector((state: stateType) => state.tasks);
+  const dispatch = useDispatch();
   const [error, setError] = useState<boolean>(false);
   const [isModalVisible, setModalVisibility] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string>("");
@@ -28,7 +30,7 @@ const Tasks: FC = () => {
   const getItems = () =>
     taskRequestHandler
       .getTasks(user?.token)
-      .then((response: TaskListRequest) => setTodos(response.data))
+      .then((response: TaskListRequest) => setTasks(response.data))
       .catch((err: AxiosError) => {
         setError(true);
         setErrorMsg(err?.message);
@@ -38,15 +40,31 @@ const Tasks: FC = () => {
     getItems();
   }, []);
 
+  const handleAddTaskForm = () => {
+    // handleModalVisibility();
+    dispatch(
+      addTask({
+        _id: "62b822d244d16b00177cd1a1" + Math.random(),
+        completed: false,
+        description: "Placeholder task",
+        owner: "62b81c3744d16b00177cd19e",
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+      })
+    );
+  };
+
   return (
     <section>
       <Table headings={headings}>
-        <tr>
-          {tasks && tasks.map((task) => <TaskItem key={task._id} {...task} />)}
-        </tr>
+        <tbody>
+          {tasks.map((task: Task) => (
+            <TaskItem {...task} />
+          ))}
+        </tbody>
       </Table>
       {error && <div>{errorMsg ?? "Error founded"}</div>}
-      <AddTaskForm handleAddTask={handleModalVisibility} />
+      <AddTaskForm handleAddTask={handleAddTaskForm} />
       {isModalVisible && (
         <Modal
           title="Add new Task"
