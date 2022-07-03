@@ -5,7 +5,11 @@ import { stateType } from "../../store";
 import { AxiosError } from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { AddTaskButton, TaskItem, Table, Modal, AddTaskForm, Badge } from "../";
-import { addTask, setTasks } from "../../store/reducers/tasksReducer";
+import {
+  addTask,
+  deleteTask,
+  setTasks,
+} from "../../store/reducers/tasksReducer";
 import "./styles/index.scss";
 
 const Tasks: FC = () => {
@@ -30,7 +34,18 @@ const Tasks: FC = () => {
   const getItems = () =>
     taskRequestHandler
       .getTasks(user?.token)
-      .then((response: TaskListRequest) => setTasks(response.data))
+      .then((response: TaskListRequest) => {
+        dispatch(setTasks(response.data));
+      })
+      .catch((err: AxiosError) => {
+        setError(true);
+        setErrorMsg(err?.message);
+      });
+
+  const handleAddTask = (description: string) =>
+    taskRequestHandler
+      .addTask(user?.token, description)
+      .then((response: TaskListRequest) => dispatch(addTask(response.data)))
       .catch((err: AxiosError) => {
         setError(true);
         setErrorMsg(err?.message);
@@ -44,28 +59,25 @@ const Tasks: FC = () => {
     handleModalVisibility();
   };
 
-  const handleAddTask = (
-    completed: boolean,
-    description: string,
-    owner: string
-  ) =>
-    dispatch(
-      addTask({
-        _id: "62b822d244d16b00177cd1a1" + Math.random(),
-        completed,
-        description,
-        owner,
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-      })
-    );
+  const handleDeleteTask = (id: string) => {
+    taskRequestHandler
+      .deleteTask(user?.token, id)
+      .then(
+        (response: TaskListRequest) =>
+          response.success && dispatch(deleteTask(id))
+      )
+      .catch((err: AxiosError) => {
+        setError(true);
+        setErrorMsg(err?.message);
+      });
+  };
 
   return (
     <section>
       <Table headings={headings}>
         <tbody>
           {tasks.map((task: Task) => (
-            <TaskItem {...task} />
+            <TaskItem {...task} handleDeleteTask={handleDeleteTask} />
           ))}
         </tbody>
       </Table>
@@ -76,9 +88,7 @@ const Tasks: FC = () => {
           title="Add new Task"
           children={
             <AddTaskForm
-              addTaskHandler={(isCompleted, description, owner) =>
-                handleAddTask(isCompleted, description, owner)
-              }
+              addTaskHandler={(description) => handleAddTask(description)}
               handleAddTask={handleAddTaskForm}
             />
           }

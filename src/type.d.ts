@@ -15,7 +15,8 @@ export type TaskList = Task[];
 
 export type TaskListRequest = {
   data: TaskList;
-  count: number;
+  count?: number;
+  success?: boolean;
 };
 
 // USER TYPES
