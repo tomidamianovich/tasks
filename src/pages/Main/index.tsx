@@ -26,7 +26,7 @@ const Main = () => {
         dispatch(unsetUser());
       })
       .finally(() => {
-        localStorage.deleteItem("user");
+        localStorage.removeItem("user");
         navigate("/login");
       });
   };

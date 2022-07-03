@@ -17,7 +17,6 @@ const tasksSlice = createSlice({
       return state;
     },
     deleteTask(state, action) {
-      debugger;
       state = state.filter((task: Task) => task._id !== action.payload);
       return state;
     },
