@@ -15,7 +15,7 @@ const Table: FC<TableProps> = ({ children, headings }) => (
         ))}
       </tr>
     </thead>
-    <tbody>{children}</tbody>
+    {children}
   </table>
 );
 export default Table;
